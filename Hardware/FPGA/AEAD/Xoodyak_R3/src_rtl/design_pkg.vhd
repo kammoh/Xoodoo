@@ -29,11 +29,13 @@ package Design_pkg is
 
     --! design parameters needed by the PreProcessor, PostProcessor, and LWC; assigned in the package body below!
     
-    constant TAG_SIZE        : integer; --! Tag size
-    constant HASH_VALUE_SIZE : integer; --! Hash value size
     
-    constant CCSW            : integer; --! variant dependent design parameter!
-    constant CCW             : integer; --! variant dependent design parameter!
+    constant TAG_SIZE        : integer := 128; --! Tag size
+    constant HASH_VALUE_SIZE : integer := 256; --! Hash value size
+    constant CCW             : integer := 32; --vector_of_constants(1); --! bdo/bdi width
+    constant CCSW            : integer := 32; --vector_of_constants(2); --! key width
+
+
     constant CCWdiv8         : integer; --! derived from parameters above, assigned in body.
     
     --! design parameters specific to the CryptoCore; assigned in the package body below!
@@ -59,17 +61,17 @@ package Design_pkg is
 	constant CMD_CRYPT      : std_logic_vector(7 downto 0); -- 0x80;
 	--constant CMD_SQUEEZE_KEY : std_logic_vector(7 downto 0); -- 0x20;
     
-    constant PADD_01          : std_logic_vector;-- 0x01;
-    constant PADD_01_KEY      : std_logic_vector;-- 0x0100;
-    constant PADD_01_KEY_NONCE : std_logic_vector; --0x0110;
+    constant PADD_01          : std_logic_vector(CCW-1 downto 0);-- 0x01;
+    constant PADD_01_KEY      : std_logic_vector(CCW-1 downto 0);-- 0x0100;
+    constant PADD_01_KEY_NONCE : std_logic_vector(CCW-1 downto 0); --0x0110;
                                                                
     --constant DOMAIN_ABSORB_HASH : std_logic_vector;                         
-    constant DOMAIN_ZERO        : std_logic_vector; 
-    constant DOMAIN_ABSORB_KEY  : std_logic_vector; 
-    constant DOMAIN_ABSORB      : std_logic_vector; 
-    constant DOMAIN_RATCHET     : std_logic_vector; 
-    constant DOMAIN_SQUEEZE     : std_logic_vector; 
-    constant DOMAIN_CRYPT       : std_logic_vector;
+    constant DOMAIN_ZERO        : std_logic_vector(CCW-1 downto 0); 
+    constant DOMAIN_ABSORB_KEY  : std_logic_vector(CCW-1 downto 0); 
+    constant DOMAIN_ABSORB      : std_logic_vector(CCW-1 downto 0); 
+    constant DOMAIN_RATCHET     : std_logic_vector(CCW-1 downto 0); 
+    constant DOMAIN_SQUEEZE     : std_logic_vector(CCW-1 downto 0); 
+    constant DOMAIN_CRYPT       : std_logic_vector(CCW-1 downto 0);
     --constant DOMAIN_SQUEEZE_KEY : std_logic_vector;  
 
     --! Functions declaration
@@ -98,10 +100,7 @@ end Design_pkg;
 package body Design_pkg is
 
     --! design parameters needed by the PreProcessor, PostProcessor, and LWC
-    constant TAG_SIZE        : integer := 128; --! Tag size
-    constant HASH_VALUE_SIZE : integer := 256; --! Hash value size
-    constant CCW             : integer := 32; --vector_of_constants(1); --! bdo/bdi width
-    constant CCSW            : integer := 32; --vector_of_constants(2); --! key width
+
     constant CCWdiv8         : integer := CCW/8; -- derived from parameters above
 
     --! design parameters specific to the CryptoCore
